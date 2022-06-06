@@ -2,6 +2,9 @@ from typing import Optional
 from sqlalchemy import table
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
+### Con las siguientes dos "class", se crean las tablas con sus respectivas columnas 
+### la primera es la columna de "Medios", y la segunda la de "velocidades"
+
 
 class Medios(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -14,6 +17,12 @@ class velocidad_medio(SQLModel, table=True):
     velocidad_Luz: Optional[float] = Field(default=None, index=True)
 
     refraccion_n_id: Optional[int] = Field(default=None, foreign_key= "medios.id")
+########################################################################################
+
+
+
+### En esta sección, creamos el motor con el cual funcionarán ambas tablas, buscando en el archivo
+### de "Base de datos V_luz.db", y la función de esta sección crear la base de datos y la tabla.
 
 
 base_de_datos="Base de datos V_luz.db"
@@ -24,7 +33,9 @@ motor = create_engine(url_base_de_datos, echo=True)
 def crear_db_y_tablas():
     SQLModel.metadata.create_all(motor)
 
+###########################################################################################
 
+### Función que agregas los medios y sus indices de refracción. 
 def medios():
 
     medio_1=Medios(medio="vacío", indice_de_refraccion=1)
@@ -46,8 +57,10 @@ def medios():
         sesion.add(medio_7)
 
         sesion.commit()
-        
+ #############################################################################################       
 
+
+### Función que selecciona el medio.
 def selec_medio():
 
     with Session(motor) as sesion:
@@ -57,6 +70,10 @@ def selec_medio():
       medios_selec=resultados.all()
       print(medios_selec)
 
+###############################################################################################
+
+
+### Función que agraga los valores de velocidad de la luz en función del medio en el que se encuentre.
 
 
 def velocidad():
@@ -80,7 +97,11 @@ def velocidad():
         sesion.add(velocidad_7)
         
         sesion.commit()
-        
+##################################################################################################
+
+
+### Por último, con esta función y condicional nos encargamos de que las tablas y base de datos sólo se ejecuten
+### cuando sean llamadas personalmente. 
 
 def main():
     crear_db_y_tablas()
